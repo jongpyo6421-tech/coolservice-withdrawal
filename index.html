@@ -7,8 +7,17 @@
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Noto Sans KR', sans-serif; background: #eef1f6; padding: 24px 16px; color: #1a1a2e; }
-  .container { max-width: 580px; margin: 0 auto; border-radius: 14px; overflow: hidden; box-shadow: 0 8px 32px rgba(0,0,0,0.13); }
+  body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background: #eef1f6;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 16px;
+    color: #1a1a2e;
+  }
+  .container { max-width: 580px; width: 100%; border-radius: 14px; overflow: hidden; box-shadow: 0 8px 32px rgba(0,0,0,0.13); }
   .header { background: linear-gradient(120deg, #0f2c4e 0%, #1a5a9a 100%); padding: 20px 24px 16px; position: relative; overflow: hidden; }
   .header::after { content: ''; position: absolute; right: -30px; top: -30px; width: 130px; height: 130px; border-radius: 50%; background: rgba(255,255,255,0.06); }
   .header .brand { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,0.6); margin-bottom: 4px; }
@@ -48,8 +57,6 @@
   .submit-btn { background: #1a5a9a; color: white; border: none; padding: 9px 22px; border-radius: 7px; font-family: 'Noto Sans KR', sans-serif; font-size: 12.5px; font-weight: 700; cursor: pointer; transition: background 0.2s; }
   .submit-btn:hover { background: #0f2c4e; }
   .submit-btn:disabled { background: #c5cdd8; cursor: not-allowed; }
-
-  /* 제출 완료 화면 */
   .success-screen { display: none; background: white; padding: 48px 24px; text-align: center; }
   .success-screen .icon { font-size: 48px; margin-bottom: 16px; }
   .success-screen h2 { font-size: 18px; font-weight: 700; color: #0f2c4e; margin-bottom: 8px; }
@@ -65,7 +72,6 @@
   </div>
   <div class="warning-bar">⚠ 탈퇴 시 모든 데이터가 영구 삭제됩니다. 신중하게 확인 후 신청해 주세요.</div>
 
-  <!-- 폼 본문 -->
   <div id="formSection">
     <div class="body">
       <div class="section-label">탈퇴 전 확인 및 동의</div>
@@ -111,39 +117,36 @@
           </div>
         </div>
       </div>
-
       <div class="section-label form-label">신청 정보</div>
       <div class="form-grid">
         <div class="form-row">
           <label>성함</label>
-          <input type="text" id="name" name="성함" placeholder="홍길동" required>
+          <input type="text" id="name" placeholder="홍길동" required>
         </div>
         <div class="form-row">
           <label>쿨서비스 계정 (이메일)</label>
-          <input type="email" id="email" name="쿨서비스계정" placeholder="example@hanmail.net" required>
+          <input type="email" id="email" placeholder="example@hanmail.net" required>
         </div>
         <div class="form-row">
           <label>현재 재직 중인 학교명 및 소속</label>
-          <input type="text" id="school" name="학교명_소속" placeholder="OO중학교 / 행정실" required>
+          <input type="text" id="school" placeholder="OO중학교 / 행정실" required>
         </div>
         <div class="form-row">
           <label>학교 전화번호(내선) 및 휴대번호</label>
-          <input type="text" id="phone" name="전화번호" placeholder="02-0000-0000 (내선 123) / 010-0000-0000" required>
+          <input type="text" id="phone" placeholder="02-0000-0000 (내선 123) / 010-0000-0000" required>
         </div>
         <div class="form-row">
           <label>요청 사항 및 사유</label>
-          <textarea id="reason" name="요청사항_사유" placeholder="탈퇴 사유를 간략히 입력해 주세요."></textarea>
+          <textarea id="reason" placeholder="탈퇴 사유를 간략히 입력해 주세요."></textarea>
         </div>
       </div>
     </div>
-
     <div class="footer">
       <span class="footer-note">이용해 주셔서 감사합니다.</span>
       <button class="submit-btn" id="submitBtn" disabled onclick="submitForm()">신청서 제출</button>
     </div>
   </div>
 
-  <!-- 제출 완료 화면 -->
   <div class="success-screen" id="successScreen">
     <div class="icon">✅</div>
     <h2>신청이 완료되었습니다.</h2>
@@ -153,11 +156,7 @@
 
 <script>
   let agreeCount = 0;
-
-  function toggleItem(id) {
-    document.getElementById(id).classList.toggle('open');
-  }
-
+  function toggleItem(id) { document.getElementById(id).classList.toggle('open'); }
   function toggleAgree(cbId, itemId) {
     const cb = document.getElementById(cbId);
     const item = document.getElementById(itemId);
@@ -166,12 +165,10 @@
     document.getElementById('agreeCount').textContent = agreeCount;
     document.getElementById('submitBtn').disabled = agreeCount < 3;
   }
-
   async function submitForm() {
     const btn = document.getElementById('submitBtn');
     btn.disabled = true;
     btn.textContent = '제출 중...';
-
     const data = {
       성함: document.getElementById('name').value,
       쿨서비스계정: document.getElementById('email').value,
@@ -179,7 +176,6 @@
       전화번호: document.getElementById('phone').value,
       요청사항_사유: document.getElementById('reason').value,
     };
-
     try {
       // ⬇ YOUR_FORMSPREE_ID 를 발급받은 ID로 교체하세요
       const res = await fetch('https://formspree.io/f/YOUR_FORMSPREE_ID', {
@@ -187,7 +183,6 @@
         headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
         body: JSON.stringify(data)
       });
-
       if (res.ok) {
         document.getElementById('formSection').style.display = 'none';
         document.getElementById('successScreen').style.display = 'block';
