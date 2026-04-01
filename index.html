@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>쿨서비스 계정 탈퇴 신청</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Noto Sans KR', sans-serif; background: #eef1f6; padding: 24px 16px; color: #1a1a2e; }
+  .container { max-width: 580px; margin: 0 auto; border-radius: 14px; overflow: hidden; box-shadow: 0 8px 32px rgba(0,0,0,0.13); }
+  .header { background: linear-gradient(120deg, #0f2c4e 0%, #1a5a9a 100%); padding: 20px 24px 16px; position: relative; overflow: hidden; }
+  .header::after { content: ''; position: absolute; right: -30px; top: -30px; width: 130px; height: 130px; border-radius: 50%; background: rgba(255,255,255,0.06); }
+  .header .brand { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,0.6); margin-bottom: 4px; }
+  .header h1 { font-size: 19px; font-weight: 700; color: #fff; margin-bottom: 6px; }
+  .header h1 span { color: #7ec8f7; }
+  .header p { font-size: 12px; font-weight: 300; color: rgba(255,255,255,0.8); line-height: 1.6; }
+  .warning-bar { background: #fff3e0; border-top: 3px solid #f4a940; padding: 8px 24px; font-size: 12px; color: #7a4800; font-weight: 500; }
+  .body { background: white; padding: 18px 24px 20px; }
+  .section-label { font-size: 14px; font-weight: 700; color: #0f2c4e; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 2px solid #1a5a9a; }
+  .accordion { border: 1px solid #e2e8f0; border-radius: 9px; overflow: hidden; margin-bottom: 12px; }
+  .acc-item { border-bottom: 1px solid #e2e8f0; }
+  .acc-item:last-child { border-bottom: none; }
+  .acc-header { display: flex; align-items: center; gap: 10px; padding: 11px 14px; cursor: pointer; background: #fafbfd; transition: background 0.15s; user-select: none; }
+  .acc-header:hover { background: #f0f4fa; }
+  .acc-header input[type="checkbox"] { width: 15px; height: 15px; accent-color: #1a5a9a; cursor: pointer; flex-shrink: 0; }
+  .acc-title { flex: 1; font-size: 12.5px; font-weight: 600; color: #0f2c4e; }
+  .acc-item.agreed .acc-header { background: #f0fff7; }
+  .acc-item.agreed .acc-title { color: #27ae60; }
+  .acc-arrow { font-size: 10px; color: #aaa; transition: transform 0.2s; }
+  .acc-item.open .acc-arrow { transform: rotate(180deg); }
+  .acc-body { display: none; padding: 10px 14px 12px 38px; background: white; border-top: 1px dashed #e2e8f0; }
+  .acc-item.open .acc-body { display: block; }
+  .acc-body p { font-size: 12px; color: #4a5568; line-height: 1.65; margin-bottom: 3px; }
+  .service-tags { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 7px; }
+  .tag { background: #e8edf4; color: #1a3a5c; font-size: 11px; padding: 2px 8px; border-radius: 20px; }
+  .agree-counter { font-size: 11px; color: #8a95a3; text-align: right; margin-bottom: 8px; }
+  .agree-counter span { font-weight: 700; color: #1a5a9a; }
+  .section-label.form-label { margin-top: 20px; }
+  .form-grid { display: flex; flex-direction: column; gap: 9px; }
+  .form-row label { display: block; font-size: 11px; font-weight: 700; color: #0f2c4e; margin-bottom: 3px; }
+  .form-row input { width: 100%; height: 34px; padding: 0 11px; border: 1px solid #dde3ec; border-radius: 7px; font-family: 'Noto Sans KR', sans-serif; font-size: 11px; color: #1a1a2e; background: #fafbfd; outline: none; -webkit-appearance: none; appearance: none; transition: border-color 0.2s, box-shadow 0.2s; }
+  .form-row textarea { width: 100%; padding: 9px 11px; border: 1px solid #dde3ec; border-radius: 7px; font-family: 'Noto Sans KR', sans-serif; font-size: 11px; color: #1a1a2e; background: #fafbfd; outline: none; resize: vertical; min-height: 60px; line-height: 1.6; transition: border-color 0.2s, box-shadow 0.2s; }
+  .form-row input::placeholder, .form-row textarea::placeholder { color: #b0bac6; font-size: 11px; opacity: 1; }
+  .form-row input:focus, .form-row textarea:focus { border-color: #1a5a9a; box-shadow: 0 0 0 3px rgba(26,90,154,0.08); background: white; }
+  .footer { background: #f4f6f9; border-top: 1px solid #e2e8f0; padding: 13px 24px; display: flex; justify-content: space-between; align-items: center; }
+  .footer-note { font-size: 12px; color: #4a5568; font-weight: 500; }
+  .submit-btn { background: #1a5a9a; color: white; border: none; padding: 9px 22px; border-radius: 7px; font-family: 'Noto Sans KR', sans-serif; font-size: 12.5px; font-weight: 700; cursor: pointer; transition: background 0.2s; }
+  .submit-btn:hover { background: #0f2c4e; }
+  .submit-btn:disabled { background: #c5cdd8; cursor: not-allowed; }
+
+  /* 제출 완료 화면 */
+  .success-screen { display: none; background: white; padding: 48px 24px; text-align: center; }
+  .success-screen .icon { font-size: 48px; margin-bottom: 16px; }
+  .success-screen h2 { font-size: 18px; font-weight: 700; color: #0f2c4e; margin-bottom: 8px; }
+  .success-screen p { font-size: 13px; color: #4a5568; line-height: 1.7; }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <div class="brand">지란지교컴즈 고객센터</div>
+    <h1>쿨서비스 <span>계정 탈퇴</span> 신청</h1>
+    <p>유의사항 확인 후 동의 및 신청 정보를 작성해 주세요.<br>회신 주시는 대로 신속히 처리해 드리겠습니다.</p>
+  </div>
+  <div class="warning-bar">⚠ 탈퇴 시 모든 데이터가 영구 삭제됩니다. 신중하게 확인 후 신청해 주세요.</div>
+
+  <!-- 폼 본문 -->
+  <div id="formSection">
+    <div class="body">
+      <div class="section-label">탈퇴 전 확인 및 동의</div>
+      <div class="agree-counter">동의 완료: <span id="agreeCount">0</span> / 3</div>
+      <div class="accordion">
+        <div class="acc-item" id="item1">
+          <div class="acc-header" onclick="toggleItem('item1')">
+            <input type="checkbox" id="cb1" onclick="event.stopPropagation(); toggleAgree('cb1','item1')">
+            <span class="acc-title">① 쿨서비스 이용 및 데이터 복구 불가 안내</span>
+            <span class="acc-arrow">▼</span>
+          </div>
+          <div class="acc-body">
+            <p>탈퇴 시 아이디(사용자 계정)는 탈퇴 처리되며, 이후 쿨서비스를 이용할 수 없습니다.</p>
+            <p>동일한 아이디로 재가입해도 기존 사용 내역은 복구가 불가합니다.</p>
+            <div class="service-tags">
+              <span class="tag">쿨알리미</span><span class="tag">쿨메신저문자</span>
+              <span class="tag">쿨알림톡</span><span class="tag">쿨렌더</span>
+              <span class="tag">쿨패스</span><span class="tag">쿨일지</span>
+            </div>
+          </div>
+        </div>
+        <div class="acc-item" id="item2">
+          <div class="acc-header" onclick="toggleItem('item2')">
+            <input type="checkbox" id="cb2" onclick="event.stopPropagation(); toggleAgree('cb2','item2')">
+            <span class="acc-title">② 회원 정보 및 개인 서비스 이용 기록 삭제 안내</span>
+            <span class="acc-arrow">▼</span>
+          </div>
+          <div class="acc-body">
+            <p>내정보 및 개인형 서비스 이용기록이 모두 삭제되며 복구되지 않습니다.</p>
+            <p>필요한 데이터는 탈퇴 전 미리 백업해주시기 바랍니다.</p>
+            <p style="color:#888; font-size:11.5px; margin-top:4px;">· 쿨메신저문자 / 쿨알림톡 포인트 및 개인 주소록</p>
+          </div>
+        </div>
+        <div class="acc-item" id="item3">
+          <div class="acc-header" onclick="toggleItem('item3')">
+            <input type="checkbox" id="cb3" onclick="event.stopPropagation(); toggleAgree('cb3','item3')">
+            <span class="acc-title">③ 서비스에 직접 게시한 컨텐츠 삭제 불가 안내</span>
+            <span class="acc-arrow">▼</span>
+          </div>
+          <div class="acc-body">
+            <p>관련법에 따라 탈퇴 후에도 구매 이력 및 등록 컨텐츠(게시물, 댓글)는 남아 있습니다.</p>
+            <p>삭제를 원하는 컨텐츠는 반드시 탈퇴 전에 직접 삭제해 주시기 바랍니다.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-label form-label">신청 정보</div>
+      <div class="form-grid">
+        <div class="form-row">
+          <label>성함</label>
+          <input type="text" id="name" name="성함" placeholder="홍길동" required>
+        </div>
+        <div class="form-row">
+          <label>쿨서비스 계정 (이메일)</label>
+          <input type="email" id="email" name="쿨서비스계정" placeholder="example@hanmail.net" required>
+        </div>
+        <div class="form-row">
+          <label>현재 재직 중인 학교명 및 소속</label>
+          <input type="text" id="school" name="학교명_소속" placeholder="OO중학교 / 행정실" required>
+        </div>
+        <div class="form-row">
+          <label>학교 전화번호(내선) 및 휴대번호</label>
+          <input type="text" id="phone" name="전화번호" placeholder="02-0000-0000 (내선 123) / 010-0000-0000" required>
+        </div>
+        <div class="form-row">
+          <label>요청 사항 및 사유</label>
+          <textarea id="reason" name="요청사항_사유" placeholder="탈퇴 사유를 간략히 입력해 주세요."></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <span class="footer-note">이용해 주셔서 감사합니다.</span>
+      <button class="submit-btn" id="submitBtn" disabled onclick="submitForm()">신청서 제출</button>
+    </div>
+  </div>
+
+  <!-- 제출 완료 화면 -->
+  <div class="success-screen" id="successScreen">
+    <div class="icon">✅</div>
+    <h2>신청이 완료되었습니다.</h2>
+    <p>탈퇴 신청이 정상적으로 접수되었습니다.<br>처리 완료 후 별도로 안내드리겠습니다.<br><br>감사합니다.</p>
+  </div>
+</div>
+
+<script>
+  let agreeCount = 0;
+
+  function toggleItem(id) {
+    document.getElementById(id).classList.toggle('open');
+  }
+
+  function toggleAgree(cbId, itemId) {
+    const cb = document.getElementById(cbId);
+    const item = document.getElementById(itemId);
+    agreeCount += cb.checked ? 1 : -1;
+    item.classList.toggle('agreed', cb.checked);
+    document.getElementById('agreeCount').textContent = agreeCount;
+    document.getElementById('submitBtn').disabled = agreeCount < 3;
+  }
+
+  async function submitForm() {
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    btn.textContent = '제출 중...';
+
+    const data = {
+      성함: document.getElementById('name').value,
+      쿨서비스계정: document.getElementById('email').value,
+      학교명_소속: document.getElementById('school').value,
+      전화번호: document.getElementById('phone').value,
+      요청사항_사유: document.getElementById('reason').value,
+    };
+
+    try {
+      // ⬇ YOUR_FORMSPREE_ID 를 발급받은 ID로 교체하세요
+      const res = await fetch('https://formspree.io/f/YOUR_FORMSPREE_ID', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify(data)
+      });
+
+      if (res.ok) {
+        document.getElementById('formSection').style.display = 'none';
+        document.getElementById('successScreen').style.display = 'block';
+      } else {
+        alert('제출 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.');
+        btn.disabled = false;
+        btn.textContent = '신청서 제출';
+      }
+    } catch (e) {
+      alert('네트워크 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.');
+      btn.disabled = false;
+      btn.textContent = '신청서 제출';
+    }
+  }
+</script>
+</body>
+</html>
