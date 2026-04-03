@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>어드민 개선 요청 — 개발 전달용 시안</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Pretendard', 'Apple SD Gothic Neo', sans-serif;
+      background: #f5f6f8;
+      color: #1a1a1a;
+      padding: 0;
+      margin: 0;
+      line-height: 1.6;
+    }
+
+    /* ── 문서 헤더 ── */
+    .doc-header {
+      max-width: 100%;
+      margin: 0 0 40px 0;
+      background: #1e1e2e;
+      padding: 28px 36px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+    .doc-header-left { display: flex; flex-direction: column; gap: 12px; }
+    .doc-header h1 { font-size: 22px; font-weight: 700; color: #fff; }
+    .doc-header .meta { display: flex; flex-direction: row; gap: 8px; flex-wrap: wrap; align-items: center; }
+    .doc-header .meta span {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 13px; font-weight: 500;
+      color: rgba(255,255,255,0.75);
+    }
+    .meta-date, .meta-location, .meta-goal { background: none; }
+    .doc-header-right { display: flex; gap: 8px; flex-shrink: 0; }
+    .header-btn {
+      font-size: 13px; font-weight: 700;
+      padding: 8px 18px; border-radius: 8px;
+      border: none; cursor: pointer;
+    }
+    .header-btn.primary { background: #4f46e5; color: #fff; }
+    .header-btn.outline { background: #16a34a; color: #fff; border: none; }
+
+    /* ── 요청 블록 ── */
+    .request-block {
+      max-width: 100%;
+      margin: 0 0 48px 0;
+      padding: 0 20px;
+    }
+    .request-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .request-num {
+      width: 28px; height: 28px;
+      background: #6366f1;
+      color: #fff;
+      border-radius: 50%;
+      font-size: 13px;
+      font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .request-title h2 { font-size: 17px; font-weight: 700; color: #111; }
+    .request-title .area-tag {
+      font-size: 12px; color: #6366f1;
+      background: #eef2ff;
+      padding: 3px 10px; border-radius: 20px;
+      font-weight: 600;
+    }
+    .goal-box {
+      background: #f0f9ff;
+      border-left: 4px solid #38bdf8;
+      border-radius: 8px;
+      padding: 13px 18px;
+      font-size: 14px;
+      color: #0369a1;
+      margin-bottom: 16px;
+    }
+    .goal-box .goal-label {
+      font-size: 14px;
+      font-weight: 700;
+      color: #0369a1;
+      margin-bottom: 8px;
+    }
+
+    /* ── 비교 그리드 ── */
+    .compare-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    @media (max-width: 700px) { .compare-grid { grid-template-columns: 1fr; } }
+
+    .panel {
+      background: #fff;
+      border-radius: 16px;
+      border: 1px solid #e5e7eb;
+      overflow: hidden;
+    }
+    .panel-header {
+      display: flex; align-items: center; gap: 10px;
+      padding: 14px 20px;
+      font-size: 13px; font-weight: 700;
+    }
+    .panel-header.before { background: #fef2f2; color: #b91c1c; border-bottom: 1px solid #fee2e2; }
+    .panel-header.after  { background: #f0fdf4; color: #15803d; border-bottom: 1px solid #bbf7d0; }
+    .panel-body { padding: 20px; }
+
+    /* ── 미니 UI ── */
+    .mini-ui {
+      background: #f8f9fa;
+      border-radius: 12px;
+      padding: 18px;
+      border: 1px solid #e5e7eb;
+      position: relative;
+    }
+    .page-title-row {
+      display: flex; align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+    .page-title { font-size: 14px; font-weight: 700; color: #111; }
+    .title-actions { display: flex; gap: 6px; }
+
+    .info-card {
+      background: #fff;
+      border-radius: 10px;
+      border: 1px solid #e5e7eb;
+      padding: 14px;
+      margin-bottom: 8px;
+    }
+    .info-card:last-child { margin-bottom: 0; }
+    .lbl { font-size: 11px; color: #9ca3af; margin-bottom: 3px; }
+    .val { font-size: 13px; color: #111; font-weight: 500; }
+    .val.pending, span.pending {
+      display: inline-block;
+      background: #fee2e2; color: #b91c1c;
+      font-size: 11px; padding: 2px 8px;
+      border-radius: 20px; font-weight: 600;
+    }
+    .val.active {
+      display: inline-block;
+      background: #dcfce7; color: #15803d;
+      font-size: 11px; padding: 2px 8px;
+      border-radius: 20px; font-weight: 600;
+    }
+    .val.user-tag {
+      display: inline-block;
+      background: #f3f4f6; color: #374151;
+      font-size: 11px; padding: 2px 8px;
+      border-radius: 20px; font-weight: 500;
+    }
+    .val.link { color: #3b82f6; }
+    .irow { display: flex; flex-direction: column; gap: 3px; }
+    .irow + .irow { margin-top: 10px; }
+
+    .no-action-msg {
+      margin-top: 12px;
+      text-align: center;
+      font-size: 12px; color: #9ca3af;
+      padding: 10px;
+      border: 1.5px dashed #d1d5db;
+      border-radius: 8px;
+    }
+
+    /* ── 버튼 ── */
+    .btn {
+      padding: 7px 14px;
+      border-radius: 8px;
+      font-size: 12px; font-weight: 600;
+      border: none; cursor: pointer;
+      transition: opacity .15s;
+      white-space: nowrap;
+    }
+    .btn:hover { opacity: .85; }
+    .btn.approve  { background: #3b82f6; color: #fff; }
+    .btn.reject   { background: #fff; color: #ef4444; border: 1.5px solid #ef4444; }
+    .btn.block    { background: #ef4444; color: #fff; }
+    .btn.remove   { background: #fff; color: #6b7280; border: 1.5px solid #d1d5db; }
+    .btn.withdraw { background: #fff; color: #ef4444; border: 1.5px solid #ef4444; }
+
+    /* ── 내비게이션 경로 바 ── */
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      background: #4f46e5;
+      color: #fff;
+      border-radius: 10px;
+      padding: 12px 20px;
+      margin-bottom: 16px;
+      font-weight: 500;
+    }
+    .breadcrumb .bc-item { color: rgba(255,255,255,0.6); }
+    .breadcrumb .bc-item.cur { color: #fff; font-weight: 700; }
+    .breadcrumb .bc-sep { color: rgba(255,255,255,0.35); font-size: 16px; }
+
+    /* ── 미니 UI 내비게이션 (제거용) ── */
+    .mini-nav { display: none; }
+
+    /* ── 사용자 페이지 레이아웃 ── */
+    .page-layout {
+      display: flex;
+      gap: 0;
+      min-height: 260px;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid #e5e7eb;
+    }
+    .page-sidebar {
+      width: 140px;
+      background: #fff;
+      border-right: 1px solid #e5e7eb;
+      padding: 12px 0;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .page-sidebar .nav-item {
+      padding: 8px 14px;
+      font-size: 12px;
+      color: #6b7280;
+      cursor: default;
+    }
+    .page-sidebar .nav-item.active {
+      background: #eff6ff;
+      color: #2563eb;
+      font-weight: 600;
+    }
+    .page-sidebar .nav-logout {
+      padding: 10px 14px;
+      font-size: 12px;
+      color: #9ca3af;
+      border-top: 1px solid #f3f4f6;
+    }
+    .page-main {
+      flex: 1;
+      background: #f0f2f5;
+      padding: 20px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+    }
+    .page-form-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 20px;
+      width: 100%;
+      max-width: 340px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    }
+    .page-form-card .card-title {
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 14px;
+      color: #111;
+    }
+    .form-field { margin-bottom: 10px; }
+    .form-field .flbl { font-size: 11px; color: #6b7280; margin-bottom: 4px; }
+    .form-field .finput {
+      width: 100%;
+      background: #f3f4f6;
+      border: none;
+      border-radius: 8px;
+      padding: 8px 10px;
+      font-size: 12px;
+      color: #374151;
+    }
+    .form-field .finput-row {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+    .form-field .finput-row .finput { flex: 1; }
+    .form-field .finput-row .fchange {
+      font-size: 11px;
+      font-weight: 600;
+      color: #374151;
+      background: #f3f4f6;
+      border: none;
+      border-radius: 8px;
+      padding: 8px 10px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .withdraw-link {
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px solid #f3f4f6;
+      text-align: right;
+    }
+    .withdraw-link button {
+      background: none;
+      border: none;
+      font-size: 12px;
+      color: #ef4444;
+      cursor: pointer;
+      text-decoration: underline;
+      padding: 0;
+    }
+
+    /* ── 모달 ── */
+    .admin-modal-overlay {
+      display: none;
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.45);
+      z-index: 10;
+      align-items: center;
+      justify-content: center;
+      border-radius: 12px;
+    }
+    .admin-modal-overlay.open { display: flex; }
+    .admin-modal-box {
+      background: #fff;
+      border-radius: 12px;
+      padding: 24px;
+      width: 300px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+    }
+    .admin-modal-title {
+      font-size: 14px; font-weight: 700;
+      color: #111; margin-bottom: 10px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #f3f4f6;
+    }
+    .admin-modal-body {
+      font-size: 13px; color: #374151;
+      line-height: 1.7; margin-bottom: 20px;
+    }
+    .admin-modal-body .warn { color: #ef4444; font-size: 12px; margin-top:6px; }
+    .admin-modal-actions { display: flex; gap: 8px; justify-content: flex-end; }
+    .admin-modal-btn {
+      padding: 8px 18px; border-radius: 8px;
+      font-size: 12px; font-weight: 600;
+      border: none; cursor: pointer;
+    }
+    .admin-modal-btn.cancel  { background: #f3f4f6; color: #374151; }
+    .admin-modal-btn.remove  { background: #6b7280; color: #fff; }
+    .admin-modal-btn.confirm { background: #ef4444; color: #fff; }
+    .admin-modal-btn.ok      { background: #3b82f6; color: #fff; }
+    .kbd {
+      display: inline-block;
+      font-size: 10px; font-weight: 600;
+      background: rgba(255,255,255,0.25);
+      border: 1px solid rgba(255,255,255,0.4);
+      border-radius: 4px;
+      padding: 1px 5px;
+      margin-left: 6px;
+      vertical-align: middle;
+      line-height: 1.6;
+    }
+    .kbd.dark {
+      background: rgba(0,0,0,0.08);
+      border-color: rgba(0,0,0,0.18);
+      color: #374151;
+    }
+    .admin-modal-done {
+      text-align: center; padding: 16px 0;
+      font-size: 14px; font-weight: 700; color: #111;
+    }
+    .admin-modal-done .sub { font-size: 12px; color: #6b7280; margin-top: 4px; font-weight: 400; }
+
+    /* ── 구분선 ── */
+    .divider {
+      max-width: 100%;
+      margin: 0 0 48px 0;
+      border: none;
+      border-top: 2px dashed #e5e7eb;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── 문서 헤더 ── -->
+<div class="doc-header">
+  <div class="doc-header-left">
+    <h1>어드민 페이지 개선 요청</h1>
+    <div class="meta">
+      <span class="meta-date">📅 2026-04-03</span>
+      <span class="meta-location">📌 쿨투표 Admin</span>
+      <span class="meta-goal">🎯 버튼 개선으로 운영 효율화</span>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     요청 1 — 사용자 상세
+     ══════════════════════════════════════ -->
+<div class="request-block">
+  <div class="request-title">
+    <div class="request-num">1</div>
+    <h2>사용자 상세 — 우측 상단 버튼 변경</h2>
+    <span class="area-tag">사용자 관리</span>
+  </div>
+  <div class="breadcrumb">
+    <span class="bc-item">쿨투표 Admin</span>
+    <span class="bc-sep">›</span>
+    <span class="bc-item">사용자 관리</span>
+    <span class="bc-sep">›</span>
+    <span class="bc-item cur">사용자 상세</span>
+  </div>
+
+  <div class="goal-box">
+    <div class="goal-label">요청 사항</div>
+    우측 상단의 <strong>'사용자 차단'</strong> 버튼을 제거하고, 아래 두 버튼으로 교체 부탁드립니다.<br>
+    <span style="display:inline-block; margin-top:8px;">
+      • <strong>소속 제외</strong> — 해당 사용자의 소속 학교를 초기화하는 기능 (소속이 없는 경우 소속 제외 버튼 하이드)<br>
+      • <strong>회원 탈퇴</strong> — 해당 사용자의 계정을 탈퇴 처리하는 기능
+    </span>
+  </div>
+
+  <div style="font-size:13px; color:#92400e; background:#fefce8; border:1px solid #fde68a; border-radius:8px; padding:10px 16px; margin-bottom:12px;">
+    💡 개선 요청 화면에서 <strong style="color:#78350f;">소속 제외·회원 탈퇴 버튼</strong>을 클릭하시면 모달을 확인하실 수 있습니다.
+  </div>
+
+  <div class="compare-grid">
+    <div class="panel">
+      <div class="panel-header before">✗ &nbsp;현재 화면</div>
+      <div class="panel-body">
+        <div class="mini-ui">
+          <div class="mini-nav">
+            <span class="nav-item">쿨투표 Admin</span>
+            <span class="nav-sep">›</span>
+            <span class="nav-item active">사용자 관리</span>
+            <span class="nav-sep">›</span>
+            <span class="nav-item active">사용자 상세</span>
+          </div>
+          <div class="page-title-row">
+            <div class="page-title">← 사용자 상세</div>
+            <div class="title-actions">
+              <button class="btn block">사용자 차단</button>
+            </div>
+          </div>
+          <div class="info-card">
+            <div class="irow">
+              <div class="lbl">이름</div><div class="val">김지란</div>
+            </div>
+            <div class="irow">
+              <div class="lbl">사용자 유형</div>
+              <div class="val"><span class="user-tag">일반 사용자</span></div>
+            </div>
+            <div class="irow">
+              <div class="lbl">이메일</div><div class="val">coolmsg@jiran.com</div>
+            </div>
+            <div class="irow">
+              <div class="lbl">소속 학교</div><div class="val">지란중학교</div>
+            </div>
+            <div class="irow">
+              <div class="lbl">계정 상태</div>
+              <div class="val"><span class="active">활성</span></div>
+            </div>
+            <div class="irow">
+              <div class="lbl">가입일</div><div class="val">2026. 03. 12. 오후 03:38</div>
+            </div>
+            <div class="irow">
+              <div class="lbl">마지막 로그인</div><div class="val">2026. 04. 01. 오후 01:09</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header after">✓ &nbsp;개선 요청 화면</div>
+      <div class="panel-body">
+        <div class="mini-ui" style="position:relative;">
+
+          <!-- 소속 제외 모달 -->
+          <div class="admin-modal-overlay" id="removeModal" onclick="if(event.target===this)closeAdminModal('removeModal')">
+            <div class="admin-modal-box">
+              <div class="admin-modal-title">소속 제외</div>
+              <div class="admin-modal-body">
+                해당 사용자를 소속 학교에서 제외합니다.
+              </div>
+              <div class="admin-modal-actions">
+                <button class="admin-modal-btn cancel" onclick="closeAdminModal('removeModal')">취소</button>
+                <button class="admin-modal-btn remove" onclick="doneAdminModal('removeModal', '소속 제외가 완료되었습니다.')">소속 제외</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 회원 탈퇴 모달 -->
+          <div class="admin-modal-overlay" id="withdrawModal" onclick="if(event.target===this)closeAdminModal('withdrawModal')">
+            <div class="admin-modal-box">
+              <div class="admin-modal-title">회원 탈퇴 처리</div>
+              <div class="admin-modal-body">
+                해당 사용자의 계정을 탈퇴 처리합니다.<br>
+                <span class="warn">탈퇴 후 계정 복구가 불가능합니다.</span>
+              </div>
+              <div class="admin-modal-actions">
+                <button class="admin-modal-btn cancel" onclick="closeAdminModal('withdrawModal')">취소</button>
+                <button class="admin-modal-btn confirm" onclick="doneAdminModal('withdrawModal', '회원 탈퇴 처리가 완료되었습니다.')">탈퇴 처리</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="mini-nav">
+            <span class="nav-item">쿨투표 Admin</span>
+            <span class="nav-sep">›</span>
+            <span class="nav-item active">사용자 관리</span>
+            <span class="nav-sep">›</span>
+            <span class="nav-item active">사용자 상세</span>
+          </div>
+          <div class="page-title-row">
+            <div class="page-title">← 사용자 상세</div>
+            <div class="title-actions">
+              <button class="btn remove" onclick="openAdminModal('removeModal')">소속 제외</button>
+              <button class="btn withdraw" onclick="openAdminModal('withdrawModal')">회원 탈퇴</button>
+            </div>
+          </div>
+          <div class="info-card">
+            <div class="irow">
+              <div class="lbl">이름</div><div class="val">김지란</div>
+            </div>
+            <div class="irow">
+              <div class="lbl">사용자 유형</div>
+              <div class="val"><span class="user-tag">일반 사용자</span></div>
+            </div>
+            <div class="irow">
+              <div class="lbl">이메일</div><div class="val">coolmsg@jiran.com</div>
+            </div>
+            <div class="irow">
+              <div class="lbl">소속 학교</div><div class="val">지란중학교</div>
+            </div>
+            <div class="irow">
+              <div class="lbl">계정 상태</div>
+              <div class="val"><span class="active">활성</span></div>
+            </div>
+            <div class="irow">
+              <div class="lbl">가입일</div><div class="val">2026. 03. 12. 오후 03:38</div>
+            </div>
+            <div class="irow">
+              <div class="lbl">마지막 로그인</div><div class="val">2026. 04. 01. 오후 01:09</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider" />
+
+<!-- ══════════════════════════════════════
+     요청 2 — 학교 대표 관리자 신청 상세
+     ══════════════════════════════════════ -->
+<div class="request-block">
+  <div class="request-title">
+    <div class="request-num">2</div>
+    <h2>학교 대표 관리자 신청 상세 — 승인/거절 버튼 추가</h2>
+    <span class="area-tag">학교 대표 관리자 신청</span>
+  </div>
+  <div class="breadcrumb">
+    <span class="bc-item">쿨투표 Admin</span>
+    <span class="bc-sep">›</span>
+    <span class="bc-item">학교 대표 관리자 신청</span>
+    <span class="bc-sep">›</span>
+    <span class="bc-item cur">학교 대표 관리자 신청 상세</span>
+  </div>
+
+  <div class="goal-box">
+    <div class="goal-label">요청 사항</div>
+    학교 대표 관리자 신청 상세 페이지에서 승인/거절 메뉴 확인이 안됩니다.<br>
+    <strong>미승인 상태일 때는 우측 상단에 승인/거절 버튼 추가</strong> 부탁드립니다.
+  </div>
+
+  <div style="font-size:13px; color:#92400e; background:#fefce8; border:1px solid #fde68a; border-radius:8px; padding:10px 16px; margin-bottom:12px;">
+    💡 개선 요청 화면에서 <strong style="color:#78350f;">승인·거절 버튼</strong>을 클릭하시면 모달을 확인하실 수 있습니다.
+  </div>
+
+  <div class="compare-grid">
+    <div class="panel">
+      <div class="panel-header before">✗ &nbsp;현재 화면</div>
+      <div class="panel-body">
+        <div class="mini-ui">
+          <div class="mini-nav">
+            <span class="nav-item">쿨투표 Admin</span>
+            <span class="nav-sep">›</span>
+            <span class="nav-item active">학교 대표 관리자 신청</span>
+            <span class="nav-sep">›</span>
+            <span class="nav-item active">신청 상세</span>
+          </div>
+          <div class="page-title-row">
+            <div class="page-title">← 학교 대표 관리자 신청 상세</div>
+          </div>
+          <div class="info-card">
+            <div class="lbl">신청 상태</div>
+            <div class="val"><span class="pending">미승인</span></div>
+            <div class="irow" style="margin-top:10px;">
+              <div class="lbl">신청 일시</div>
+              <div class="val">2026-03-20 14:21</div>
+            </div>
+          </div>
+          <div class="info-card">
+            <div class="lbl">신청자 정보</div>
+            <div class="irow">
+              <div class="lbl">이름</div><div class="val">김지란</div>
+            </div>
+            <div class="irow">
+              <div class="lbl">이메일</div><div class="val">coolmsg@jiran.com</div>
+            </div>
+          </div>
+          <div class="info-card">
+            <div class="lbl">학교 정보</div>
+            <div class="irow">
+              <div class="lbl">학교명</div><div class="val">지란중학교</div>
+            </div>
+            <div class="irow">
+              <div class="lbl">첨부 파일</div><div class="val link">고유번호증</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header after">✓ &nbsp;개선 요청 화면</div>
+      <div class="panel-body">
+        <div class="mini-ui">
+          <div class="mini-nav">
+            <span class="nav-item">쿨투표 Admin</span>
+            <span class="nav-sep">›</span>
+            <span class="nav-item active">학교 대표 관리자 신청</span>
+            <span class="nav-sep">›</span>
+            <span class="nav-item active">신청 상세</span>
+          </div>
+          <div class="page-title-row">
+            <div class="page-title">← 학교 대표 관리자 신청 상세</div>
+            <div class="title-actions">
+              <button class="btn reject" onclick="openAdminModal('rejectModal')">거절</button>
+              <button class="btn approve" onclick="openAdminModal('approveModal')">승인</button>
+            </div>
+          </div>
+          <!-- 거절 모달 -->
+          <div class="admin-modal-overlay" id="rejectModal" onclick="if(event.target===this)closeAdminModal('rejectModal')">
+            <div class="admin-modal-box">
+              <div class="admin-modal-title">신청 거절</div>
+              <div class="admin-modal-body">학교 대표 관리자 신청을 거절하시겠습니까?</div>
+              <div class="admin-modal-actions">
+                <button class="admin-modal-btn cancel" onclick="closeAdminModal('rejectModal')">취소</button>
+                <button class="admin-modal-btn confirm" onclick="doneAdminModal('rejectModal', '학교 대표 관리자 신청이 거절되었습니다.')">거절</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 승인 모달 -->
+          <div class="admin-modal-overlay" id="approveModal" onclick="if(event.target===this)closeAdminModal('approveModal')">
+            <div class="admin-modal-box">
+              <div class="admin-modal-title">신청 승인</div>
+              <div class="admin-modal-body">학교 대표 관리자 신청을 승인하시겠습니까?</div>
+              <div class="admin-modal-actions">
+                <button class="admin-modal-btn cancel" onclick="closeAdminModal('approveModal')">취소</button>
+                <button class="admin-modal-btn ok" onclick="doneAdminModal('approveModal', '학교 대표 관리자 신청이 승인되었습니다.')">승인</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="info-card">
+            <div class="lbl">신청 상태</div>
+            <div class="val"><span class="pending">미승인</span></div>
+            <div class="irow" style="margin-top:10px;">
+              <div class="lbl">신청 일시</div>
+              <div class="val">2026-03-20 14:21</div>
+            </div>
+          </div>
+          <div class="info-card">
+            <div class="lbl">신청자 정보</div>
+            <div class="irow">
+              <div class="lbl">이름</div><div class="val">김지란</div>
+            </div>
+            <div class="irow">
+              <div class="lbl">이메일</div><div class="val">coolmsg@jiran.com</div>
+            </div>
+          </div>
+          <div class="info-card">
+            <div class="lbl">학교 정보</div>
+            <div class="irow">
+              <div class="lbl">학교명</div><div class="val">지란중학교</div>
+            </div>
+            <div class="irow">
+              <div class="lbl">첨부 파일</div><div class="val link">고유번호증</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  var modalOriginals = {};
+  function openAdminModal(id) {
+    var box = document.querySelector('#' + id + ' .admin-modal-box');
+    if (!modalOriginals[id]) modalOriginals[id] = box.innerHTML;
+    else box.innerHTML = modalOriginals[id];
+    document.getElementById(id).classList.add('open');
+  }
+  function closeAdminModal(id) {
+    document.getElementById(id).classList.remove('open');
+  }
+  function doneAdminModal(id, msg) {
+    var box = document.querySelector('#' + id + ' .admin-modal-box');
+    box.innerHTML = '<div class="admin-modal-done">' + msg + '</div><div class="admin-modal-actions" style="margin-top:16px;"><button class="admin-modal-btn ok" onclick="closeAdminModal(\'' + id + '\')">확인</button></div>';
+  }
+  function getOpenModalId() {
+    var ids = ['removeModal', 'withdrawModal', 'rejectModal', 'approveModal'];
+    for (var i = 0; i < ids.length; i++) {
+      if (document.getElementById(ids[i]).classList.contains('open')) return ids[i];
+    }
+    return null;
+  }
+  document.addEventListener('keydown', function(e) {
+    var id = getOpenModalId();
+    if (!id) return;
+    var isDone = !!document.querySelector('#' + id + ' .admin-modal-done');
+    if (e.key === 'Escape') {
+      closeAdminModal(id);
+    } else if (e.key === 'Enter') {
+      if (isDone) {
+        closeAdminModal(id);
+      } else {
+        var confirmBtn = document.querySelector('#' + id + ' .admin-modal-btn:not(.cancel)');
+        if (confirmBtn) confirmBtn.click();
+      }
+    }
+  });
+</script>
+</body>
+</html>

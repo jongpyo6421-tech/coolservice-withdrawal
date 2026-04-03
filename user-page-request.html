@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>사용자 페이지 개선 요청 — 개발 전달용 시안</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Pretendard', 'Apple SD Gothic Neo', sans-serif;
+      background: #f5f6f8;
+      color: #1a1a1a;
+      padding: 0;
+      line-height: 1.6;
+    }
+
+    /* ── 문서 헤더 ── */
+    .doc-header {
+      max-width: 100%;
+      margin: 0 0 40px 0;
+      background: #1e1e2e;
+      padding: 28px 36px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+    .doc-header-left { display: flex; flex-direction: column; gap: 12px; }
+    .doc-header h1 { font-size: 22px; font-weight: 700; color: #fff; }
+    .doc-header .meta { display: flex; flex-direction: row; gap: 8px; flex-wrap: wrap; align-items: center; }
+    .doc-header .meta span {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 13px; font-weight: 500;
+      color: rgba(255,255,255,0.75);
+    }
+
+    /* ── 요청 블록 ── */
+    .request-block {
+      max-width: 100%;
+      margin: 0 0 48px 0;
+      padding: 0 20px;
+    }
+    .request-title {
+      display: flex; align-items: center;
+      gap: 12px; margin-bottom: 12px;
+    }
+    .request-num {
+      width: 28px; height: 28px;
+      background: #6366f1; color: #fff;
+      border-radius: 50%; font-size: 13px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .request-title h2 { font-size: 17px; font-weight: 700; color: #111; }
+    .request-title .area-tag {
+      font-size: 12px; color: #6366f1;
+      background: #eef2ff;
+      padding: 3px 10px; border-radius: 20px; font-weight: 600;
+    }
+
+    /* ── 내비게이션 바 ── */
+    .breadcrumb {
+      display: flex; align-items: center;
+      gap: 10px; font-size: 14px;
+      background: #4f46e5; color: #fff;
+      border-radius: 10px; padding: 12px 20px;
+      margin-bottom: 16px; font-weight: 500;
+    }
+    .breadcrumb .bc-item { color: rgba(255,255,255,0.6); }
+    .breadcrumb .bc-item.cur { color: #fff; font-weight: 700; }
+    .breadcrumb .bc-sep { color: rgba(255,255,255,0.35); font-size: 16px; }
+
+    /* ── 요청 사항 박스 ── */
+    .goal-box {
+      background: #f0f9ff;
+      border-left: 4px solid #38bdf8;
+      border-radius: 8px;
+      padding: 13px 18px;
+      font-size: 14px; color: #0369a1;
+      margin-bottom: 16px;
+    }
+    .goal-box .goal-label {
+      font-size: 14px; font-weight: 700;
+      color: #0369a1; margin-bottom: 8px;
+    }
+
+    /* ── 비교 그리드 ── */
+    .compare-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+    }
+    @media (max-width: 700px) { .compare-grid { grid-template-columns: 1fr; } }
+
+    .panel {
+      background: #fff; border-radius: 16px;
+      border: 1px solid #e5e7eb; overflow: hidden;
+    }
+    .panel-header {
+      display: flex; align-items: center; gap: 10px;
+      padding: 14px 20px; font-size: 13px; font-weight: 700;
+    }
+    .panel-header.before { background: #fef2f2; color: #b91c1c; border-bottom: 1px solid #fee2e2; }
+    .panel-header.after  { background: #f0fdf4; color: #15803d; border-bottom: 1px solid #bbf7d0; }
+    .panel-body { padding: 20px; }
+
+    /* ── 사용자 페이지 레이아웃 ── */
+    .page-layout {
+      display: flex;
+      min-height: 280px;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid #e5e7eb;
+    }
+    .page-sidebar {
+      width: 150px; background: #fff;
+      border-right: 1px solid #e5e7eb;
+      padding: 12px 0; flex-shrink: 0;
+      display: flex; flex-direction: column;
+      justify-content: space-between;
+    }
+    .sidebar-nav-item {
+      padding: 8px 16px;
+      font-size: 12px; color: #6b7280; cursor: default;
+    }
+    .sidebar-nav-item.active {
+      background: #eff6ff; color: #2563eb; font-weight: 600;
+    }
+    .sidebar-logout {
+      padding: 10px 16px;
+      font-size: 12px; color: #9ca3af;
+      border-top: 1px solid #f3f4f6;
+    }
+    .page-main {
+      flex: 1; background: #f0f2f5; padding: 24px;
+      display: flex; align-items: flex-start; justify-content: center;
+    }
+    .page-form-card {
+      background: #fff; border-radius: 12px;
+      padding: 20px; width: 100%; max-width: 360px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    }
+    .card-title {
+      font-size: 14px; font-weight: 700;
+      margin-bottom: 16px; color: #111;
+    }
+    .form-field { margin-bottom: 10px; }
+    .flbl { font-size: 11px; color: #6b7280; margin-bottom: 4px; }
+    .finput {
+      width: 100%; background: #f3f4f6;
+      border: none; border-radius: 8px;
+      padding: 8px 10px; font-size: 12px; color: #374151;
+    }
+    .finput-row { display: flex; gap: 6px; align-items: center; }
+    .finput-row .finput { flex: 1; }
+    .fchange {
+      font-size: 11px; font-weight: 600; color: #374151;
+      background: #f3f4f6; border: none; border-radius: 8px;
+      padding: 8px 10px; cursor: pointer; white-space: nowrap;
+    }
+    .withdraw-area {
+      margin-top: 16px; padding-top: 14px;
+      border-top: 1px solid #f3f4f6;
+      text-align: right;
+    }
+    .withdraw-btn {
+      background: none; border: none;
+      font-size: 12px; color: #ef4444;
+      cursor: pointer; text-decoration: underline; padding: 0;
+    }
+
+    /* ── 구분선 ── */
+    .divider {
+      margin: 0 0 48px 0;
+      border: none;
+      border-top: 2px dashed #e5e7eb;
+    }
+
+    /* ── 로그아웃 개선 ── */
+    .sidebar-logout-after {
+      padding: 10px 16px;
+      font-size: 13px;
+      color: #374151;
+      font-weight: 700;
+      border-top: 1px solid #f3f4f6;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+    }
+    .sidebar-logout-after:hover { background: #f9fafb; }
+
+    /* ── 가이드 선 ── */
+    .guide-sidebar { position: relative; }
+    .guide-line {
+      position: absolute;
+      left: 17px;
+      top: 18px;
+      bottom: 20px;
+      border-left: 2px dashed #6366f1;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    /* ── 모달 ── */
+    .modal-overlay {
+      display: none;
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.45);
+      z-index: 10;
+      align-items: center;
+      justify-content: center;
+      border-radius: 12px;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal-box {
+      background: #fff;
+      border-radius: 12px;
+      padding: 24px;
+      width: 320px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+    }
+    .modal-title {
+      font-size: 14px; font-weight: 700;
+      color: #111; margin-bottom: 12px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #f3f4f6;
+    }
+    .modal-warning {
+      font-size: 12px; color: #ef4444;
+      line-height: 1.7; margin-bottom: 16px;
+    }
+    .modal-icons {
+      display: flex; gap: 20px;
+      margin-bottom: 20px;
+    }
+    .modal-icon-item {
+      display: flex; flex-direction: column;
+      align-items: center; gap: 4px;
+      font-size: 11px; color: #374151;
+    }
+    .modal-icon-item .icon { font-size: 28px; }
+    .modal-actions {
+      display: flex; gap: 8px; justify-content: flex-end;
+    }
+    .modal-btn {
+      padding: 8px 18px; border-radius: 8px;
+      font-size: 12px; font-weight: 600;
+      border: none; cursor: pointer;
+    }
+    .modal-btn.cancel { background: #f3f4f6; color: #374151; }
+    .modal-btn.confirm { background: #ef4444; color: #fff; }
+  </style>
+</head>
+<body>
+
+<!-- ── 문서 헤더 ── -->
+<div class="doc-header">
+  <div class="doc-header-left">
+    <h1>사용자 페이지 개선 요청</h1>
+    <div class="meta">
+      <span>📅 2026-04-03</span>
+      <span>📌 쿨투표</span>
+      <span>🎯 사용자 계정 관리 기능 개선</span>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     요청 1 — 내 정보 관리
+     ══════════════════════════════════════ -->
+<div class="request-block">
+  <div class="request-title">
+    <div class="request-num">1</div>
+    <h2>내 정보 관리 — 회원 탈퇴 버튼 추가</h2>
+    <span class="area-tag">사용자 페이지</span>
+  </div>
+  <div class="breadcrumb">
+    <span class="bc-item">쿨투표</span>
+    <span class="bc-sep">›</span>
+    <span class="bc-item cur">내 정보 관리</span>
+  </div>
+
+  <div class="goal-box">
+    <div class="goal-label">요청 사항</div>
+    내 정보 관리 페이지에 회원 탈퇴 메뉴 추가 요청드립니다.<br>
+    <span style="display:inline-block; margin-top:6px; color:#ef4444;">* 회원 탈퇴 버튼 클릭 &gt; 모달로 유의사항 안내 &gt; 탈퇴하기 클릭 시 탈퇴 완료 메시지 안내</span>
+  </div>
+
+  <div style="font-size:13px; color:#92400e; background:#fefce8; border:1px solid #fde68a; border-radius:8px; padding:10px 16px; margin-bottom:12px;">
+    💡 개선 요청 화면에서 <strong style="color:#78350f;">회원 탈퇴 버튼</strong>을 클릭하시면 모달을 확인하실 수 있습니다.
+  </div>
+  <div class="compare-grid">
+    <div class="panel">
+      <div class="panel-header before">✗ &nbsp;현재 화면</div>
+      <div class="panel-body">
+        <div class="page-layout">
+          <div class="page-sidebar">
+            <div>
+              <div class="sidebar-nav-item active">내 정보 관리</div>
+            </div>
+            <div class="sidebar-logout">로그아웃</div>
+          </div>
+          <div class="page-main">
+            <div class="page-form-card">
+              <div class="card-title">기본 정보 •</div>
+              <div class="form-field">
+                <div class="flbl">가입 정보</div>
+                <div class="finput">일반회원</div>
+              </div>
+              <div class="form-field">
+                <div class="flbl">이름</div>
+                <div class="finput">박종표</div>
+              </div>
+              <div class="form-field">
+                <div class="flbl">아이디(이메일)</div>
+                <div class="finput">nheur102465@jiran.com</div>
+              </div>
+              <div class="form-field">
+                <div class="flbl">비밀번호</div>
+                <div class="finput-row">
+                  <div class="finput">••••••</div>
+                  <button class="fchange">변경하기</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header after">✓ &nbsp;개선 요청 화면</div>
+      <div class="panel-body">
+        <div class="page-layout" style="position:relative;">
+          <div class="modal-overlay" id="withdrawModal">
+            <div class="modal-box">
+              <div class="modal-title">쿨투표 이용 및 데이터 복구 불가 안내</div>
+              <div class="modal-warning">
+                회원 탈퇴 시 사용하고 계신 아이디(계정)는 탈퇴 처리되며, 이후 쿨투표를 이용할 수 없습니다.<br>
+                탈퇴 후 동일한 아이디로 재가입 하더라도 기존 사용 내역은 복구가 불가능합니다.
+              </div>
+              <div class="modal-actions">
+                <button class="modal-btn cancel">취소</button>
+                <button class="modal-btn confirm">탈퇴하기</button>
+              </div>
+            </div>
+          </div>
+          <div class="page-sidebar">
+            <div>
+              <div class="sidebar-nav-item active">내 정보 관리</div>
+            </div>
+            <div class="sidebar-logout">로그아웃</div>
+          </div>
+          <div class="page-main">
+            <div class="page-form-card">
+              <div class="card-title">기본 정보 •</div>
+              <div class="form-field">
+                <div class="flbl">가입 정보</div>
+                <div class="finput">일반회원</div>
+              </div>
+              <div class="form-field">
+                <div class="flbl">이름</div>
+                <div class="finput">박종표</div>
+              </div>
+              <div class="form-field">
+                <div class="flbl">아이디(이메일)</div>
+                <div class="finput">nheur102465@jiran.com</div>
+              </div>
+              <div class="form-field">
+                <div class="flbl">비밀번호</div>
+                <div class="finput-row">
+                  <div class="finput">••••••</div>
+                  <button class="fchange">변경하기</button>
+                </div>
+              </div>
+              <div class="withdraw-area">
+                <button class="withdraw-btn">회원 탈퇴</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider" />
+
+<!-- ══════════════════════════════════════
+     요청 2 — 로그아웃 버튼 가시성 개선
+     ══════════════════════════════════════ -->
+<div class="request-block">
+  <div class="request-title">
+    <div class="request-num">2</div>
+    <h2>내 정보 관리 — 로그아웃 버튼 가시성 개선</h2>
+    <span class="area-tag">사용자 페이지</span>
+  </div>
+  <div class="breadcrumb">
+    <span class="bc-item">쿨투표</span>
+    <span class="bc-sep">›</span>
+    <span class="bc-item cur">내 정보 관리</span>
+  </div>
+
+  <div class="goal-box">
+    <div class="goal-label">요청 사항</div>
+    현재 로그아웃 버튼의 텍스트가 작고 흐려 사용자가 쉽게 인지하기 어려울 것 같습니다.<br>아이콘 추가 및 텍스트 볼드 효과 부탁드리며, 텍스트 크기는 상단 <strong>"내 정보 관리"</strong>와 동일하게 맞추면 좋을 것 같습니다.<br>추가로 위치도 <strong>"내 정보 관리"</strong> 앞의 아이콘과 정렬 부탁드립니다.
+  </div>
+
+  <div class="compare-grid">
+    <div class="panel">
+      <div class="panel-header before">✗ &nbsp;현재 화면</div>
+      <div class="panel-body">
+        <div class="page-layout">
+          <div class="page-sidebar">
+            <div>
+              <div class="sidebar-nav-item active" style="display:flex; align-items:center; gap:6px;">
+                <span style="font-size:14px;">👤</span> 내 정보 관리
+              </div>
+            </div>
+            <div class="sidebar-logout">로그아웃</div>
+          </div>
+          <div class="page-main">
+            <div class="page-form-card">
+              <div class="card-title">기본 정보 •</div>
+              <div class="form-field">
+                <div class="flbl">이름</div>
+                <div class="finput">박종표</div>
+              </div>
+              <div class="form-field">
+                <div class="flbl">아이디(이메일)</div>
+                <div class="finput">nheur102465@jiran.com</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header after">✓ &nbsp;개선 요청 화면</div>
+      <div class="panel-body">
+        <div class="page-layout">
+          <div class="page-sidebar guide-sidebar">
+            <div class="guide-line"></div>
+            <div>
+              <div class="sidebar-nav-item active" style="display:flex; align-items:center; gap:6px;">
+                <span style="font-size:14px;">👤</span> 내 정보 관리
+              </div>
+            </div>
+            <div class="sidebar-logout-after">
+              <span style="font-size:14px;">↩</span> 로그아웃
+            </div>
+          </div>
+          <div class="page-main">
+            <div class="page-form-card">
+              <div class="card-title">기본 정보 •</div>
+              <div class="form-field">
+                <div class="flbl">이름</div>
+                <div class="finput">박종표</div>
+              </div>
+              <div class="form-field">
+                <div class="flbl">아이디(이메일)</div>
+                <div class="finput">nheur102465@jiran.com</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const modal = document.getElementById('withdrawModal');
+
+  document.querySelector('.withdraw-btn').addEventListener('click', () => {
+    modal.classList.add('open');
+  });
+
+  document.querySelector('.modal-btn.cancel').addEventListener('click', () => {
+    modal.classList.remove('open');
+  });
+
+  document.querySelector('.modal-btn.confirm').addEventListener('click', () => {
+    document.querySelector('.modal-box').innerHTML = `
+      <div style="text-align:center; padding: 20px 0;">
+        <div style="font-size:15px; font-weight:700; color:#111; margin-bottom:8px;">회원 탈퇴가 완료되었습니다.</div>
+        <div style="font-size:13px; color:#6b7280;">이용해 주셔서 감사합니다.</div>
+      </div>
+    `;
+  });
+</script>
+</body>
+</html>
